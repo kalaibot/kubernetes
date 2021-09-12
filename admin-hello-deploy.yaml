@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  namespace: local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+      - name: admin
+        image: kalaipm/ubuntu:9800
+        ports:
+        - containerPort: 9800
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 150m
+            memory: 250Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin
+  namespace: local
+spec:
+  type: ClusterIP
+  selector:
+    app: admin
+  ports:
+  - port: 9800
+    targetPort: 9800
+    name: http
+    protocol: TCP
