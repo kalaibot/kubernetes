@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: local
+  name: ingress-2048
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:898611095813:certificate/f2ee663e-d3b3-4cfa-bcd5-e718e3eb1006
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-1-2017-01
+spec:
+  rules:
+  - host: "hello.iq.devops.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/hello"
+        backend:
+          service:
+            name: hello
+            port:
+              number: 9000
+  - host: "web.iq.devops.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/web"
+        backend:
+          service:
+            name: web
+            port:
+              number: 9500
+  - host: "admin.iq.devops.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/admin"
+        backend:
+          service:
+            name: admin
+            port:
+              number: 9800
