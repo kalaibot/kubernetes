@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: kalaipm/ubuntu:9500
+        ports:
+        - containerPort: 9500
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 150m
+            memory: 250Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: local
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+  ports:
+  - port: 9500
+    targetPort: 9500
+    name: http
+    protocol: TCP
