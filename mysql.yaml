@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: mysql
+  name: db-pv
+  namespace: components
+spec:
+  accessModes:
+  - ReadWriteOnce
+  awsElasticBlockStore:
+    fsType: xfs
+    volumeID: vol-01704612333334a6
+  capacity:
+    storage: 60Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: mysql
+  name: db-pv-claim
+  namespace: components
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 60Gi
+  selector:
+    matchLabels:
+      app: mysql
+  storageClassName: ''
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: components
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:5.6.50
+        name: db
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: xxxxxxxxxx
+        - name: MYSQL_DATABASE
+          value: tmpdb
+        - name: MYSSQL_USER
+          value: posuser
+        - name: MYSQL_PASSWORD
+          value: xxxxxxxxx
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name:  db-pv
+          mountPath: /var/lib/mysql
+        - name: mysql-cnf-pv
+          mountPath: /etc/mysql/conf.d
+      volumes:
+      - configMap:
+          items:
+          - key: my.cnf
+            path: my.cnf
+          name: mysql-cnf
+        name: mysql-cnf-pv
+      - name: db-talech-pv
+        persistentVolumeClaim:
+          claimName: db-pv-claim
+      nodeSelector:
+        topology.kubernetes.io/zone: us-east-1a
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: components
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+
+---
+apiVersion: v1
+data:
+  my.cnf: "[mysqld]\n \
+    \ sql_mode = \"STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\"\n \
+    \ explicit_defaults_for_timestamp = 1"
+kind: ConfigMap
+metadata:
+  labels:
+    app: mysql
+  name: mysql-cnf
+  namespace: components
