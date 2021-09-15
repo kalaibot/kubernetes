@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu
+  namespace: components
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: ubuntu:latest
+        name: ubuntu
+        args:
+          - "-c"
+          - "sleep infinity"
+        command:
+          - /bin/sh
+        volumeMounts:
+        - name:  db-pv
+          mountPath: /var/lib/mysql/
+        - name: db-pv
+          mountPath: /etc/mysql/conf.d
+      volumes:
+      - name: db-pv
+        persistentVolumeClaim:
+          claimName: db-pv-claim
+      nodeSelector:
+        topology.kubernetes.io/zone: us-east-1a
