@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: deployer-pod
+  namespace: jenkins-agent
+spec:
+  serviceAccountName: jenkins-agent
+#   securityContext:
+#     runAsUser: 1000
+#     runAsGroup: 1000
+#     fsGroup: 1000
+#   volumes:
+#   - name: ssh-keys-temp-volume
+#     secret:
+#       secretName: deployer-ssh-keypair
+#   - name: ssh-volume
+#     emptyDir: {}
+  imagePullSecrets:
+  - name: sfdf
+#   initContainers:
+#   - name: init
+#     image: dc01-jenkins-agent:0.0.7
+#     command: [ "sh", "-c"]
+#     args:
+#       - cp /tmp/id_rsa/* /home/deployer/.ssh;
+#         echo "StrictHostKeyChecking no" >> /home/deployer/.ssh/config;
+#         chmod 600 /home/deployer/.ssh/id_rsa /home/deployer/.ssh/config;
+#     volumeMounts:
+#     - name: ssh-keys-temp-volume
+#       mountPath: /tmp/id_rsa
+#     - name: ssh-volume
+#       mountPath: /home/deployer/.ssh
+  containers:
+  - name: jnlp
+    image: jenkins-inbound-agent:0.0.1
+    resources:
+      requests:
+        memory: '256Mi'
+        cpu: '250m'
+      limits:
+        memory: '300Mi'
+        cpu: '300m'
+  - name: shell
+    image: jenkins-agent:0.0.1
+    #image: ubuntu:22.04
+    command:
+      - cat
+    tty: true
+    #command: ["sh", "-c"]
+#     args:
+#       - sleep infinity
+    resources:
+      requests:
+        memory: '256Mi'
+        cpu: '250m'
+      limits:
+        memory: '4Gi'
+        cpu: '2'
+#     volumeMounts:
+#     - name: ssh-volume
+#       mountPath: /home/deployer/.ssh
+#   dnsConfig:
+#     nameservers:
+#     - "13.107.24.6"
