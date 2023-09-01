@@ -20,7 +20,7 @@ spec:
   - name: sfdf
 #   initContainers:
 #   - name: init
-#     image: dc01-jenkins-agent:0.0.7
+#     image: jenkins-agent:0.0.7
 #     command: [ "sh", "-c"]
 #     args:
 #       - cp /tmp/id_rsa/* /home/deployer/.ssh;
