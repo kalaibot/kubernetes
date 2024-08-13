@@ -1,0 +1,25 @@
+artifactory-url: https://artifactory-bluemix.org/artifactory
+artifactory-mvn-url: https://artifactory-bluemix.org/artifactory/mvn
+#app-id-prefix: CAS-DEVOPS -
+##Added the below for Onboarding action 
+tools:
+  java-default: "17" 
+  maven-default: "3.7.2"
+  node-default: "12"
+  npm-default: "6.14.17"
+  sonar-version: "3.9.1.2184"
+debug:
+  logging-level: 20 
+  insights-mq: false
+  neo4j: false
+org-team-name: Global Enterprise GHA
+apigee-approval-config:
+  approval-group: apigee-dev-deploy
+  email-ids:
+  - rithikrajvemula@sosonweb.com
+  email-ids-for-warning-dep-limit-exceed:
+  - rithikrajvemula@sosonweb.com
+karate-protocols:
+  - TLSv1
+  - TLSv1.2
+restricted-envs: ['preprod', 'prod', 'uat', dr' drn', 'regional', 'preview']
