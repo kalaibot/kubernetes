@@ -1,5 +1,6 @@
 import os
 import pytest
+from main import get_env
 #from unittest.mock import patch
 
 # Fixture to mock the GITHUB_SERVER_URL environment variable
@@ -11,22 +12,22 @@ def mock_git_url(monkeypatch):
 
 def test_get_env_sandbox(mock_git_url):
     mock_git_url('https://sandbox.github.com/repo.git')
-    from main import get_env
+    #from main import get_env
     assert get_env() == 'sandbox'
 
 def test_get_env_local(mock_git_url):
     mock_git_url('https://localhost/repo.git')
-    from main import get_env
+    #from main import get_env
     assert get_env() == 'local'
 
 def test_get_env_staging(mock_git_url):
     mock_git_url('https://staging.github.com/repo.git')
-    from main import get_env
+    #from main import get_env
     assert get_env() == 'staging'
 
 def test_get_env_production(mock_git_url):
     mock_git_url('https://github.com/repo.git')
-    from main import get_env
+    #from main import get_env
     assert get_env() == 'production'
 
 
