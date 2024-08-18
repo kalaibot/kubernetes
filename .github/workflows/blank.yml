@@ -33,6 +33,13 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: run pytest
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        python -m pip install --upgrade pip
+        pip install -r ./.github/actions/load-pipeline-props-action/requirements.txt
+        pytest -sv .github/actions/load-pipeline-props-action/
       # # Runs a single command using the runners shell
       # - name: Run a one-line script
       #   run: echo Hello, world!
